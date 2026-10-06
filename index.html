@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>doi-citations v1.6.0 test</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 60rem; margin: 2rem auto; padding: 0 1rem; color: #222; }
+    h1 { font-size: 1.4rem; margin-bottom: .25rem; }
+    h2 { font-size: 1rem; margin: 2rem 0 .25rem; }
+    p.note { color: #555; margin: 0 0 .75rem; font-size: .9rem; }
+    code { background: #f2f2f2; padding: 0 .25em; border-radius: 3px; }
+    .controls { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .75rem; }
+    .controls input { flex: 1 1 24rem; padding: .35rem; font: inherit; }
+    button { font: inherit; padding: .35rem .75rem; cursor: pointer; }
+    #status { padding: .6rem .8rem; border-radius: 4px; margin: 1rem 0; }
+    #status.ok { background: #e6f4ea; color: #1e4620; }
+    #status.bad { background: #fde8e8; color: #7a1f1f; }
+  </style>
+</head>
+<body>
+  <h1>&lt;doi-citations&gt; v1.5.0 test page</h1>
+  <p class="note">Loads <code>./doi-citations.umd.js</code> from this folder. Serve the folder over http (not file://) so the API calls have a normal origin.</p>
+  <div id="status">Loading widget…</div>
+
+  <h2>1. Interactive: change the DOI and options</h2>
+  <p class="note">Changing the <code>doi</code> attribute should re-fetch; toggling options should re-render.</p>
+  <div class="controls">
+    <input id="doi-input" value="10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa" aria-label="DOI">
+    <button id="apply">Set doi</button>
+    <label><input type="checkbox" id="opt-list" checked> show-list</label>
+    <label><input type="checkbox" id="opt-datacite"> datacite</label>
+  </div>
+  <doi-citations id="live" show-list doi="10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa"></doi-citations>
+
+  <h2>2. GeoNetwork-style placeholder</h2>
+  <p class="note">Starts as an unresolved <code>{{…}}</code> template (should wait, not error), then gets a real DOI the way AngularJS would fill it in.</p>
+  <div class="controls"><button id="resolve">Resolve placeholder</button></div>
+  <doi-citations id="placeholder" show-list doi="{{mdView.current.record.doi}}"></doi-citations>
+
+  <h2>3. Count only, three ways of giving the DOI</h2>
+  <p class="note">All three should show the same count.</p>
+  <doi-citations doi="10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa"></doi-citations>
+  <doi-citations doi="https://doi.org/10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa"></doi-citations>
+  <doi-citations>10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa</doi-citations>
+
+  <h2>4. Count with DataCite views/downloads</h2>
+  <p class="note">Count should match section 3; DataCite only adds the usage line.</p>
+  <doi-citations datacite doi="10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa"></doi-citations>
+
+  <h2>5. Error handling</h2>
+  <p class="note">Expected: invalid DOI error, then a DOI with no citation record (should show zero, not an error).</p>
+  <doi-citations doi="123-ABC"></doi-citations>
+  <doi-citations doi="10.1080/10509585.2015.1092083"></doi-citations>
+
+  <script src="./doi-citations.umd.js"
+          onerror="window.__widgetLoadFailed = true"></script>
+  <script>
+    (function () {
+      var status = document.getElementById('status');
+      if (window.__widgetLoadFailed || !customElements.get('doi-citations')) {
+        status.className = 'bad';
+        status.textContent = 'doi-citations.umd.js did not load. Is it in this folder, and is it the UMD build? ' +
+          '(Check the browser console.)';
+        return;
+      }
+      // v1.5.0+ observes the doi attribute; older builds only read text content.
+      var observed = customElements.get('doi-citations').observedAttributes || [];
+      if (observed.indexOf('doi') === -1) {
+        status.className = 'bad';
+        status.textContent = 'Widget loaded, but it is an OLD build without the doi attribute (needs v1.5.0+). ' +
+          'Everything using doi="…" will say "No DOI provided". Re-download the release file.';
+        return;
+      }
+      status.className = 'ok';
+      status.textContent = 'Widget loaded (v1.5.0+ build: supports the doi attribute).';
+
+      var live = document.getElementById('live');
+      document.getElementById('apply').onclick = function () {
+        live.setAttribute('doi', document.getElementById('doi-input').value.trim());
+      };
+      document.getElementById('opt-list').onchange = function (e) {
+        live.toggleAttribute('show-list', e.target.checked);
+      };
+      document.getElementById('opt-datacite').onchange = function (e) {
+        live.toggleAttribute('datacite', e.target.checked);
+      };
+      document.getElementById('resolve').onclick = function () {
+        document.getElementById('placeholder')
+          .setAttribute('doi', '10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa');
+      };
+    })();
+  </script>
+</body>
+</html>
