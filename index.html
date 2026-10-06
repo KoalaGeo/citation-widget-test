@@ -26,12 +26,12 @@
   <h2>1. Interactive: change the DOI and options</h2>
   <p class="note">Changing the <code>doi</code> attribute should re-fetch; toggling options should re-render.</p>
   <div class="controls">
-    <input id="doi-input" value="10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa" aria-label="DOI">
+    <input id="doi-input" value="10.5285/1c44ce99-0a0d-5f4f-e063-7086abc0ea0f" aria-label="DOI">
     <button id="apply">Set doi</button>
     <label><input type="checkbox" id="opt-list" checked> show-list</label>
     <label><input type="checkbox" id="opt-datacite"> datacite</label>
   </div>
-  <doi-citations id="live" show-list doi="10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa"></doi-citations>
+  <doi-citations id="live" show-list doi="10.5285/1c44ce99-0a0d-5f4f-e063-7086abc0ea0f"></doi-citations>
 
   <h2>2. GeoNetwork-style placeholder</h2>
   <p class="note">Starts as an unresolved <code>{{…}}</code> template (should wait, not error), then gets a real DOI the way AngularJS would fill it in.</p>
@@ -40,13 +40,13 @@
 
   <h2>3. Count only, three ways of giving the DOI</h2>
   <p class="note">All three should show the same count.</p>
-  <doi-citations doi="10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa"></doi-citations>
-  <doi-citations doi="https://doi.org/10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa"></doi-citations>
-  <doi-citations>10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa</doi-citations>
+  <doi-citations doi="10.5285/1c44ce99-0a0d-5f4f-e063-7086abc0ea0f"></doi-citations>
+  <doi-citations doi="https://doi.org/10.5285/1c44ce99-0a0d-5f4f-e063-7086abc0ea0f"></doi-citations>
+  <doi-citations>10.5285/1c44ce99-0a0d-5f4f-e063-7086abc0ea0f</doi-citations>
 
   <h2>4. Count with DataCite views/downloads</h2>
   <p class="note">Count should match section 3; DataCite only adds the usage line.</p>
-  <doi-citations datacite doi="10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa"></doi-citations>
+  <doi-citations datacite doi="10.5285/1c44ce99-0a0d-5f4f-e063-7086abc0ea0f"></doi-citations>
 
   <h2>5. Error handling</h2>
   <p class="note">Expected: invalid DOI error, then a DOI with no citation record (should show zero, not an error).</p>
@@ -87,7 +87,7 @@
       };
       document.getElementById('resolve').onclick = function () {
         document.getElementById('placeholder')
-          .setAttribute('doi', '10.5285/4f68d5c7-45eb-f999-e063-7086abc036fa');
+          .setAttribute('doi', '10.5285/1c44ce99-0a0d-5f4f-e063-7086abc0ea0f');
       };
     })();
   </script>
